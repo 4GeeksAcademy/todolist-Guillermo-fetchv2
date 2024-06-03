@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import List from "./List";
 
-const BoxInput = () => {
+const Home = () => {
   const [inputValue, setInputValue] = useState("");
   const [tasks, setTasks] = useState([]);
 
@@ -42,4 +42,4 @@ const BoxInput = () => {
   );
 };
 
-export default BoxInput;
+export default Home;
