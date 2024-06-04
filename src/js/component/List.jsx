@@ -8,8 +8,22 @@ const List = ({ tasks, setTasks }) => {
     setCounter(tasks.length);
   }, [tasks]);
 
-  const handleDeleteTask = (indexToDelete) => {
-    setTasks(tasks.filter((_, index) => index !== indexToDelete));
+  const handleDeleteTask = (idToDelete) => {
+    const updatedTasks = tasks.filter((task) => task.id !== idToDelete);
+    setTasks(updatedTasks);
+
+    fetch(`https://playground.4geeks.com/todo/todos/${idToDelete}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok " + response.statusText);
+        }
+        console.log(response);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
 
   return (
@@ -18,14 +32,15 @@ const List = ({ tasks, setTasks }) => {
         <p className="text-center">No hay tareas, añadir tareas.</p>
       ) : (
         <ul className="list-group rounded-0">
-          {tasks.map((task, index) => (
+          {tasks.map((task) => (
             <li
-              key={index}
+              key={task.id}
               className="list-group-item d-flex justify-content-between align-items-center"
             >
-              {task}
+              {task.label}
               <button
-                onClick={() => handleDeleteTask(index)}
+                onClick={() => handleDeleteTask(task.id)}
+
                 className="btn btn-sm delete-button"
               >
                 <i className="fa-solid fa-trash"></i>
