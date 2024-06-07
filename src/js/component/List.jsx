@@ -47,6 +47,26 @@ const List = ({ tasks, setTasks }) => {
     }
   };
 
+  const cleanTasks = () => {
+    tasks.forEach((task) => {
+      fetch(`https://playground.4geeks.com/todo/todos/${task.id}`, {
+        method: "DELETE",
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(
+              "Network response was not ok " + response.statusText
+            );
+          }
+          console.log(response);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    });
+  
+    setTasks([]);
+  };
   const deleteTask = (idToDelete) => {
     const updatedTasks = tasks.filter((task) => task.id !== idToDelete);
     setTasks(updatedTasks);
@@ -101,8 +121,11 @@ const List = ({ tasks, setTasks }) => {
         </ul>
       )}
       {counter > 0 && (
-        <div className="p-2 border border-top-0 fw-light">
-          Tareas pendientes: {counter}
+        <div className="p-2 border border-top-0 fw-light d-flex justify-content-between">
+          <p>Tareas pendientes: {counter}</p>
+          <button onClick={cleanTasks} type="button" className="btn btn-danger">
+            Limpiar Tareas
+          </button>
         </div>
       )}
     </div>
