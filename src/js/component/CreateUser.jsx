@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const CreateUser = ({userExist, setUserName, userName = undefined }) => {
+const CreateUser = ({ setUserName, userName = undefined }) => {
   const [newUserName, setNewUserName] = useState("");
   const handleUserChange = (event) => {
     setNewUserName(event.target.value);

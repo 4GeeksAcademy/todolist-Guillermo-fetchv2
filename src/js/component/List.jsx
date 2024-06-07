@@ -8,7 +8,7 @@ const List = ({ tasks, setTasks }) => {
     setCounter(tasks.length);
   }, [tasks]);
 
-  const checkTask = (idToCheck) => {
+  const toggleTask = (idToCheck) => {
     const editTasks = tasks.map((task) => {
       if (task.id === idToCheck) {
         return { ...task, is_done: !task.is_done };
@@ -47,7 +47,7 @@ const List = ({ tasks, setTasks }) => {
     }
   };
 
-  const handleDeleteTask = (idToDelete) => {
+  const deleteTask = (idToDelete) => {
     const updatedTasks = tasks.filter((task) => task.id !== idToDelete);
     setTasks(updatedTasks);
 
@@ -80,17 +80,17 @@ const List = ({ tasks, setTasks }) => {
               {task.label}
               <div>
                 <button
-                  onClick={() => checkTask(task.id)}
+                  onClick={() => toggleTask(task.id)}
                   className="btn btn-sm hidden-button"
                 >
-                  {task.is_done == false ? (
-                    <i className="fa-regular fa-square-check fa-xl"></i>
-                  ) : (
+                  {task.is_done ? (
                     <i className="fa-solid fa-square-check fa-xl"></i>
+                  ) : (
+                    <i className="fa-regular fa-square-check fa-xl"></i>
                   )}
                 </button>
                 <button
-                  onClick={() => handleDeleteTask(task.id)}
+                  onClick={() => deleteTask(task.id)}
                   className="btn btn-sm hidden-button"
                 >
                   <i className="fa-solid fa-trash"></i>

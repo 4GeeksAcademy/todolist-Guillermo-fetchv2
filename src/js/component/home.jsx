@@ -6,9 +6,6 @@ const Home = () => {
   const [inputValue, setInputValue] = useState("");
   const [tasks, setTasks] = useState([]);
   const [userName, setUserName] = useState("");
-  const [userExist, setuserExist] = useState(false)
-  console.log(userExist)
-
 
   useEffect(() => {
     if (!userName) return;
@@ -31,7 +28,7 @@ const Home = () => {
           is_done: tarea.is_done,
         }));
         setTasks(taskData);
-        console.log("DataGet", data)
+        console.log("DataGet", data);
       })
       .catch((error) => {
         console.error("ErrorGet:", error);
@@ -98,11 +95,7 @@ const Home = () => {
 
   return (
     <div className="container mt-5 d-flex justify-content-center">
-      <CreateUser
-        userExist={userExist}
-        userName={userName}
-        setUserName={setUserName}
-      />
+      <CreateUser userName={userName} setUserName={setUserName} />
       <div className="row w-100 d-flex justify-content-center">
         <div className="col-md-8">
           <h1 className="text-center">-ToDo List-{userName}</h1>
