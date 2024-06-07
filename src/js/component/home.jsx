@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from "react";
 import List from "./List";
+import CreateUser from "./CreateUser";
 
 const Home = () => {
   const [inputValue, setInputValue] = useState("");
   const [tasks, setTasks] = useState([]);
+  const [userName, setUserName] = useState("");
+  const [userExist, setuserExist] = useState(false)
+  console.log(userExist)
+
 
   useEffect(() => {
-    fetch("https://playground.4geeks.com/todo/users/Guille", {
+    if (!userName) return;
+    fetch(`https://playground.4geeks.com/todo/users/${userName}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -14,9 +20,7 @@ const Home = () => {
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error(
-            "Network response was not ok " + response.statusText
-          );
+          throw new Error("Network response was not ok " + response.statusText);
         }
         return response.json();
       })
@@ -27,14 +31,18 @@ const Home = () => {
           is_done: tarea.is_done,
         }));
         setTasks(taskData);
-        console.log(taskData)
+        console.log("DataGet", data)
       })
       .catch((error) => {
-        console.error("Error:", error);
+        console.error("ErrorGet:", error);
       });
-  }, []);
+  }, [userName]);
 
   const handleInputChange = (event) => {
+    if (userName === "") {
+      alert("Select User Name");
+      return;
+    }
     setInputValue(event.target.value);
   };
 
@@ -47,18 +55,21 @@ const Home = () => {
       };
       setTasks([...tasks, newTask]);
 
-      fetch("https://playground.4geeks.com/todo/todos/Guille", {
+      fetch(`https://playground.4geeks.com/todo/todos/${userName}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           accept: "application/json",
         },
-        body: JSON.stringify({ label: newTask.label, is_done: newTask.is_done }),
+        body: JSON.stringify({
+          label: newTask.label,
+          is_done: newTask.is_done,
+        }),
       })
         .then((response) => {
           if (!response.ok) {
             throw new Error(
-              "Network response was not ok " + response.statusText
+              "Network response was not ok POST" + response.statusText
             );
           }
           return response.json();
@@ -69,10 +80,10 @@ const Home = () => {
               task.id === newTask.id ? { ...task, id: data.id } : task
             )
           );
-          console.log("Success:", data);
+          console.log("postSuccess:", data);
         })
         .catch((error) => {
-          console.error("Error:", error);
+          console.error("postError:", error);
         });
 
       setInputValue("");
@@ -87,9 +98,14 @@ const Home = () => {
 
   return (
     <div className="container mt-5 d-flex justify-content-center">
+      <CreateUser
+        userExist={userExist}
+        userName={userName}
+        setUserName={setUserName}
+      />
       <div className="row w-100 d-flex justify-content-center">
         <div className="col-md-8">
-          <h1 className="text-center">ToDo List</h1>
+          <h1 className="text-center">-ToDo List-{userName}</h1>
           <input
             value={inputValue}
             onChange={handleInputChange}

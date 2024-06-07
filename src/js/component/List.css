@@ -2,10 +2,10 @@
   position: relative;
 }
 
-.delete-button {
+.hidden-button {
   display: none;
 }
 
-.list-group-item:hover .delete-button {
+.list-group-item:hover .hidden-button {
   display: inline;
 }

@@ -8,6 +8,45 @@ const List = ({ tasks, setTasks }) => {
     setCounter(tasks.length);
   }, [tasks]);
 
+  const checkTask = (idToCheck) => {
+    const editTasks = tasks.map((task) => {
+      if (task.id === idToCheck) {
+        return { ...task, is_done: !task.is_done };
+      }
+      return task;
+    });
+
+    const taskToUpdate = tasks.find((task) => task.id === idToCheck);
+
+    if (taskToUpdate) {
+      fetch(`https://playground.4geeks.com/todo/todos/${idToCheck}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          label: taskToUpdate.label,
+          is_done: !taskToUpdate.is_done,
+        }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(
+              "Network response was not ok " + response.statusText
+            );
+          }
+          console.log(response);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+
+      setTasks(editTasks);
+    } else {
+      console.error("Task not found");
+    }
+  };
+
   const handleDeleteTask = (idToDelete) => {
     const updatedTasks = tasks.filter((task) => task.id !== idToDelete);
     setTasks(updatedTasks);
@@ -25,7 +64,6 @@ const List = ({ tasks, setTasks }) => {
         console.error("Error:", error);
       });
   };
-
   return (
     <div>
       {tasks.length === 0 ? (
@@ -35,16 +73,29 @@ const List = ({ tasks, setTasks }) => {
           {tasks.map((task) => (
             <li
               key={task.id}
-              className="list-group-item d-flex justify-content-between align-items-center"
+              className={`list-group-item d-flex ${
+                task.is_done ? "bg-success-subtle text-success-emphasis" : ""
+              } justify-content-between align-items-center`}
             >
               {task.label}
-              <button
-                onClick={() => handleDeleteTask(task.id)}
-
-                className="btn btn-sm delete-button"
-              >
-                <i className="fa-solid fa-trash"></i>
-              </button>
+              <div>
+                <button
+                  onClick={() => checkTask(task.id)}
+                  className="btn btn-sm hidden-button"
+                >
+                  {task.is_done == false ? (
+                    <i className="fa-regular fa-square-check fa-xl"></i>
+                  ) : (
+                    <i className="fa-solid fa-square-check fa-xl"></i>
+                  )}
+                </button>
+                <button
+                  onClick={() => handleDeleteTask(task.id)}
+                  className="btn btn-sm hidden-button"
+                >
+                  <i className="fa-solid fa-trash"></i>
+                </button>
+              </div>
             </li>
           ))}
         </ul>
